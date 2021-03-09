@@ -9,21 +9,25 @@ import UIKit
 
 class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
+    //function to set number of components in Picker View
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
+    //function to set number of rows in Picker View
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return qualification.count
     }
     
+    //function to set element in Picker View
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return qualification[row]
     }
     
+    //function to do something when an element is selected in Picker View
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if qualification[row] == "Choose Education Qualification"{
-            basicPay = 0.0
+            basicPay = 0.0 //if no qualification selected taking basic Salary as 0
         }else if qualification[row] == "Bachelor"{
             basicPay = 55000.0
         }else if qualification[row] == "Diploma"{
@@ -37,6 +41,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         super.didReceiveMemoryWarning()
     }
     
+    //declaring some variables for Salary Estimation
     var qualification = ["Choose Education Qualification","Bachelor","Diploma","High School"]
     var basicPay:Double = 0.0
     var kidsAllowance:Double = 0.0
@@ -44,7 +49,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     var skillBonus1:Double = 0.0
     var skillBonus2:Double = 0.0
     
-    
+    //Connecting Views as Outlets from main Storyboard
     @IBOutlet weak var qualificationPicker: UIPickerView!
     @IBOutlet weak var single: UIButton!
     @IBOutlet weak var notSingle: UIButton!
@@ -71,16 +76,17 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         self.qualificationPicker.delegate = self
         self.qualificationPicker.dataSource = self
         
+        //Initially setting the no of kids, salary estimeted and experience as 0
         kidsValue.text = "0"
         estimatedSalary.text = "0"
         
         message.text = "Please above Button to get Estimated Salary"
         
         experienceValue.text = "0"
-        marital()
+        marital() //calling marital function to check marital status and change remaining views
     }
 
-
+    //if single selected the action will takes place
     @IBAction func singleSelected(_ sender: Any) {
         single.isSelected = true
         notSingle.isSelected = false
@@ -92,6 +98,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         kidsStepper.isEnabled = false
     }
     
+    //if married action
     @IBAction func notSingleSelected(_ sender: Any) {
         notSingle.isSelected = true
         single.isSelected = false
@@ -101,7 +108,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         kid()
     }
     
-    
+    //if kids present
     @IBAction func hasKids(_ sender: Any) {
         kids.isSelected = true
         noKids.isSelected = false
@@ -111,6 +118,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         kidsValue.text = "1"
     }
     
+    //if kids not present
     @IBAction func hasNoKids(_ sender: Any) {
         kids.isSelected = false
         noKids.isSelected = true
@@ -119,19 +127,22 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         kidsStepper.isEnabled = false
     }
     
+    //assigning the stepper value to kidsValue
     @IBAction func kidsStepper(_ sender: UIStepper) {
         kidsValue.text = String(Int(sender.value))
     }
     
+    //if java check box ticked
     @IBAction func java(_ sender: Any) {
-        if java.isSelected{
+        if java.isSelected{    //if java already ticked then it it unticks it
             java.isSelected = false
         }else {
             java.isSelected = true
             none.isSelected = false
         }
-        checkNone()
+        checkNone() // Checking None and changing the remaining views
     }
+    //if cSharp check box ticked
     @IBAction func cSharp(_ sender: Any) {
         if cSharp.isSelected{
             cSharp.isSelected = false
@@ -141,6 +152,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         checkNone()
     }
+    //if swift check box ticked
     @IBAction func swift(_ sender: Any) {
         if swift.isSelected{
             swift.isSelected = false
@@ -150,6 +162,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         checkNone()
     }
+    //if php check box ticked
     @IBAction func php(_ sender: Any) {
         if php.isSelected{
             php.isSelected = false
@@ -159,6 +172,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         checkNone()
     }
+    //if python check box ticked
     @IBAction func python(_ sender: Any) {
         if python.isSelected{
             python.isSelected = false
@@ -168,6 +182,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         checkNone()
     }
+    //if rlang check box ticked
     @IBAction func rlang(_ sender: Any) {
         if rlanguage.isSelected{
             rlanguage.isSelected = false
@@ -177,6 +192,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         checkNone()
     }
+    //if javascript check box ticked
     @IBAction func javascript(_ sender: Any) {
         if javascript.isSelected{
             javascript.isSelected = false
@@ -186,6 +202,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         checkNone()
     }
+    //if none check box ticked
     @IBAction func none(_ sender: Any) {
         if none.isSelected{
             none.isSelected = false
@@ -202,20 +219,23 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         checkNone()
     }
     
+    //assigning the slider value to experienceValue
     @IBAction func expSlided(_ sender: UISlider) {
         experienceValue.text = String(Int(sender.value))
     }
     
     
-    
+    //action when get Estimated salary Pressed
     @IBAction func getEstimatedSalary(_ sender: Any) {
         
-        if basicPay != 0 {
+        if basicPay != 0 { //checking the basic pay if it is not zero
             
-            let kids = Int(kidsValue.text!)!
-            kidsAllowance = Double(kids) * 7000.0
+            let kids = Int(kidsValue.text!)!  //taking no of kids
+            kidsAllowance = Double(kids) * 7000.0 //adding 7000 per each kid
             
+            //checking for swift or python or rlanguage
             if swift.isSelected || python.isSelected || rlanguage.isSelected {
+                //if any selected adding 5000
                 skillBonus1 = 5000.0
             }else{
                 skillBonus1 = 0.0
@@ -226,21 +246,24 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                 skillBonus2 = 0.0
             }
     
-            let exp:Int = Int(experienceValue.text!)!
+            let exp:Int = Int(experienceValue.text!)!//taking experience
             if exp > 3{
-                experienceBonus = 10000.0
+                experienceBonus = 10000.0 //adding 10000 if experience > 3
             }else {
                 experienceBonus = 0.0
             }
             
+            //calculation final Salary Estimated
             let estimatedSal = basicPay + kidsAllowance + experienceBonus + skillBonus1 + skillBonus2
             
-            estimatedSalary.text = String(format: "%.2f", estimatedSal)
+            //keeping in Estimated Salary Label
+            estimatedSalary.text = String(format: "%.2f", estimatedSal) //upto 2 decimal places
             message.text = "Thank you for using our service"
             message.isHighlighted = false
             message.textColor = #colorLiteral(red: 0, green: 0.5921568627, blue: 0.6549019608, alpha: 1)
             
         }else {
+            //if no qualification is selected shows user  the following
             message.text = "Please Choose Qualification"
             message.textColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
             message.isHighlighted = true
@@ -249,7 +272,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
        
     }
     
-    
+    //function to check none in programming languages and return true if no one selected
     func checkNone(){
         if java.isSelected || cSharp.isSelected || swift.isSelected || php.isSelected || python.isSelected || rlanguage.isSelected || javascript.isSelected {
             none.isSelected = false
@@ -258,6 +281,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
     }
     
+    //function to check marital status and change remaining buttons
     func marital(){
             if single.isSelected {
                 kid()
@@ -266,6 +290,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             }
         }
         
+    //function to check kids status and change remaining buttons
     func kid(){
         if kids.isSelected {
             kidsStepper.isEnabled = true
